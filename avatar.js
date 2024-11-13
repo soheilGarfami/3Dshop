@@ -48,9 +48,9 @@ function setupScene(gltf) {
     controls.enablePan = false;
     controls.enableZoom = false;
     controls.minDistance = 3;
-    controls.minPolarAngle = 1.4;
+    controls.minPolarAngle = 1;
     controls.maxPolarAngle = 1.4;
-    controls.target = new THREE.Vector3(0, 0.75, 0);
+    controls.target = new THREE.Vector3(0, 0.95, 0);
     controls.update();
 
     // Scene setup
@@ -92,10 +92,10 @@ function setupScene(gltf) {
     // Load animations
     const mixer = new THREE.AnimationMixer(avatar);
     const clips = gltf.animations;
-    const waveClip = THREE.AnimationClip.findByName(clips, 'first');
-    const stumbleClip = THREE.AnimationClip.findByName(clips, 'dance');
-    const waveAction = mixer.clipAction(waveClip);
-    const stumbleAction = mixer.clipAction(stumbleClip);
+    const firstClip = THREE.AnimationClip.findByName(clips, 'first');
+    const danceClip = THREE.AnimationClip.findByName(clips, 'dance');
+    const firstAction = mixer.clipAction(firstClip);
+    const danceAction = mixer.clipAction(danceClip);
 
     let isStumbling = false;
     const raycaster = new THREE.Raycaster();
@@ -112,14 +112,14 @@ function setupScene(gltf) {
         if (isStumbling) return;
 
         isStumbling = true;
-        stumbleAction.reset();
-        stumbleAction.play();
-        waveAction.crossFadeTo(stumbleAction, 0.3);
+        danceAction.reset();
+        danceAction.play();
+        firstAction.crossFadeTo(danceAction, 0.3);
 
         setTimeout(() => {
-          waveAction.reset();
-          waveAction.play();
-          stumbleAction.crossFadeTo(waveAction, 1);
+          firstAction.reset();
+          firstAction.play();
+          danceAction.crossFadeTo(firstAction, 1);
           setTimeout(() => isStumbling = false, 1000);
         }, 4000)
       }
@@ -139,5 +139,5 @@ function setupScene(gltf) {
     }
 
     animate();
-    waveAction.play();
+    firstAction.play();
 }
